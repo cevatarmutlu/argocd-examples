@@ -4,7 +4,6 @@ metadata:
   generateName: git-clone-run-
   annotations:
     argocd.argoproj.io/hook: PostSync
-    argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   taskRef:
     name: git-clone-lister # Yukarıdaki Task'ı çağırıyoruz
