@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: git-clone-run-
+spec:
+  taskRef:
+    name: git-clone-lister # Yukarıdaki Task'ı çağırıyoruz
+
+  # Parametre değerini gönderiyoruz
+  params:
+    - name: repo-url
+      value: "https://github.com/tektoncd/pipeline.git" # Örnek olarak Tekton'un kendi reposu
+
+  # Workspace için disk sağlıyoruz
+  workspaces:
+    - name: output
+      emptyDir: {} # Şimdilik kalıcı PVC yerine geçici disk veriyoruz
