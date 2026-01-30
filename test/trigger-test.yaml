@@ -1,0 +1,32 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: github-listener-test
+spec:
+  serviceAccountName: tekton-triggers-sa
+  triggers:
+    - name: spark-trigger
+      interceptors:
+        - ref:
+            name: "github"
+          params:
+            - name: "secretRef"
+              value:
+                secretName: github-secret
+                secretKey: secretToken
+        # 🎯 İŞTE KRİTİK FİLTRE BURASI
+        - ref:
+            name: "cel"
+          params:
+            - name: "filter"
+              # Değişen dosyalardan herhangi biri 'spark/' ile başlıyor mu?
+              value: >
+                body.commits.exists(c, 
+                  c.added.exists(f, f.startsWith('spark/')) || 
+                  c.modified.exists(f, f.startsWith('spark/')) || 
+                  c.removed.exists(f, f.startsWith('spark/'))
+                )
+      bindings:
+        - ref: github-trigger-binding
+      template:
+        ref: pipeline-template
