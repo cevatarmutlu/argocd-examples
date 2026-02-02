@@ -14,12 +14,10 @@ spec:
               value:
                 secretName: github-secret
                 secretKey: secretToken
-        # 🎯 İŞTE KRİTİK FİLTRE BURASI
         - ref:
             name: "cel"
           params:
             - name: "filter"
-              # Değişen dosyalardan herhangi biri 'spark/' ile başlıyor mu?
               value: >
                 body.commits.exists(c, 
                   c.added.exists(f, f.startsWith('spark/')) || 
